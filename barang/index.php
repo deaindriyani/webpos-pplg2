@@ -10,11 +10,35 @@ require "../config/functions.php";
 require "../module/mode-barang.php";
 
 $title = "Data Barang - Market PPLG";
+
 require "../template/header.php";
 require "../template/navbar.php";
 require "../template/sidebar.php";
-?>
 
+if (isset($_GET['msg'])){
+    $msg = $_GET['msg'];
+} else {
+    $msg = '';
+}
+
+$alert = '';
+
+if ($msg == 'deleted'){
+    $id = $_GET['id'];
+    $gbr = $_GET['gbr'];
+    delete($id, $gbr);
+    $alert = "<script>
+    $(document).ready(function() {
+        $(document).toasts('create', {
+        title : 'Sukses',
+        body : 'Data barang berhasil dihapus dari database',
+        class : 'bg-succes',
+        icon : 'fas fa-check-circle'
+})
+});
+    </script>";
+}
+?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -51,29 +75,30 @@ require "../template/sidebar.php";
                     <table class="table table-hover text-nowrap" id="tblData">
                         <thead>
                             <tr>
-
                                 <th>Gambar</th>
                                 <th>ID Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Harga Beli</th>
                                 <th>Harga Jual</th>
+                                
                                 <th style="width: 10%;">Operasi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-
+                            
                             $barang = getData("SELECT * FROM tbl_barang");
                             foreach ($barang as $b): ?>
                                 <tr>
-
-                                <td><img src="../assets/image/<?= $b['gambar'] ?>" class="rounded-circle" width="60px" alt=""></td>
+                                    
+                                    <td><img src="../assets/image/<?= $b['gambar'] ?>" class="rounded-circle" width="60px" alt=""></td>
                                     <td><?= $b['id_barang'] ?></td>
+                                    <td><?= $b['nama_barang'] ?></td>
                                     <td><?= $b['harga_beli'] ?></td>
                                     <td><?= $b['harga_jual'] ?></td>
                                     
                                     <td>
-                                    
+                                        
                                         <a href="?id=<?= $b['id_barang'] ?>&gbr=<?= $b['gambar'] ?>&msg=deleted"
                                             class="btn btn-sm btn-danger" onclick="return confirm('Anda yakin akan menghapus barang ini?')"><i
                                                 class="fas fa-trash"></i></a>
